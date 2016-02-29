@@ -690,3 +690,18 @@ func TestRunQueriesWithOrderedShouldNotMeetAllExpectations(t *testing.T) {
 		t.Fatal("was expecting an error, but there wasn't any")
 	}
 }
+
+func TestRunQueriesReturningErrorsCanMeetExpectations(t *testing.T) {
+	db, mock, _ := New()
+	mock.ExpectQuery(`Erroring Query`).WillReturnError(fmt.Errorf("Error"))
+
+	_, err := db.Query(`Erroring Query`)
+
+	if err == nil {
+		t.Errorf("was expecting an error, but there was none")
+	}
+
+	if err = mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expections: %s", err)
+	}
+}

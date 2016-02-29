@@ -345,6 +345,8 @@ func (c *sqlmock) Query(query string, args []driver.Value) (rw driver.Rows, err 
 		return nil, fmt.Errorf("query '%s', does not match regex [%s]", query, expected.sqlRegex.String())
 	}
 
+	expected.triggered = true
+
 	if err := expected.argsMatches(args); err != nil {
 		return nil, fmt.Errorf("exec query '%s', arguments do not match: %s", query, err)
 	}
